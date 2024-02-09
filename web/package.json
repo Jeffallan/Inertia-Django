@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@inertiajs/vue3": "^1.0.14",
+    "@vueform/vueform": "^1.7.3",
     "vue": "^3.3.11",
     "vuetify": "^3.5.2"
   },

@@ -9,8 +9,9 @@ import { aliases, fa } from 'vuetify/iconsets/fa'
 import { mdi } from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import Vueform from '@vueform/vueform'
 import vueformConfig from '../vueform.config'
+import Vueform from '@vueform/vueform'
+
 
 const vuetify = createVuetify({
   components,
