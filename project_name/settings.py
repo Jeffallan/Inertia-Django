@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
     'django_vite',
     'inertia',
     'js_routes',
-    'example_app'
+    'example_app',
 ]
 
 MIDDLEWARE = [
@@ -52,9 +53,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'inertia.middleware.InertiaMiddleware',
+    'core.middleware.InertiaShare',
+    
 ]
 
-ROOT_URLCONF = '{{ project_name }}.urls'
+ROOT_URLCONF = 'project_name.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = '{{ project_name }}.wsgi.application'
+WSGI_APPLICATION = 'project_name.wsgi.application'
 
 
 # Database
@@ -175,6 +178,7 @@ INERTIA_SSR_URL = "http://localhost:13714"
 # JS Routes
 
 JS_ROUTES_INCLUSION_LIST = [
-    "example"
+    "example_view",
+    "detail_view"
 ]
 

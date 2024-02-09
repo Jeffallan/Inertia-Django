@@ -1,12 +1,29 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { resolve } from "path"
+import { fileURLToPath, URL } from 'node:url'
 
-// https://vitejs.dev/config/
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import  { resolve } from "path"
+
+//https://vitejs.dev/config/
+//export default defineConfig({
+//  plugins: [
+//    vue(),
+//  ],
+//  resolve: name => {
+//      const pages = import.meta.glob('./pages/**/*.vue', { eager: true })
+//      return pages[`./pages/${name}.vue`]
+//    },
+//    alias: {
+//      '@': fileURLToPath(new URL('./src', import.meta.url))
+//    },  
+//  
+//})
+
+
 export default defineConfig({
   base: "/static/",
   plugins: [
-      svelte({
+      vue({
         compilerOptions: {
           hydratable: false
         }
@@ -25,4 +42,4 @@ export default defineConfig({
       allowedHeaders: "*"
     }
   }
-})
+}) 
