@@ -1,7 +1,10 @@
+import json
 from inertia import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django.views import View
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib import messages
 from django.core.paginator import EmptyPage 
@@ -64,6 +67,8 @@ class InertiaCreateView(CreateView):
     model = None
     prop_name = None
     inertia_view = None
+    redirect_url = None
+
     def get(self, request, *args, **kwargs):
         sup = super().get(self)
         print((sup.context_data["view"].fields))
@@ -73,14 +78,36 @@ class InertiaCreateView(CreateView):
                                }
                      )
 
-class InertiaUpdateView(UpdateView):
+class InertiaUpdateOrCreateView(View):
     model = None
     prop_name = None
     inertia_view = None
+    redirect_url = None
+    form_class = None
+
     def get(self, request, *args, **kwargs):
-        sup = super().get(self)
+        sup = self.model.objects.get(id=kwargs["pk"])
+        print(vars(sup))
         return render(request,
                       self.inertia_view,
-                      props = {self.prop_name: sup.context_data['object'],
+                      props = {self.prop_name: sup,
                                }
                      )
+    def put(self, request, *args, **kwargs):
+        if self.form_class:
+            data = json.loads(request.body.decode("utf-8"))
+            form = self.form_class(data=data)
+            entry = self.model.objects.get(id=kwargs["pk"])
+            if form.is_valid():
+                for k,v in data.items():
+                    setattr(entry, k, v)
+                entry.save()
+                return HttpResponseRedirect(self.redirect_url)
+
+    def post(self, request, *args, **kwargs):
+        if self.form_class:
+            data = json.loads(request.body.decode("utf-8"))
+            form = self.form_class(data=data)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(self.redirect_url)

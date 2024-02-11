@@ -1,65 +1,37 @@
 <script setup>
 
+
+import { useForm } from '@inertiajs/vue3'
+
 import DefaultLayout from '../../layouts/DefaultLayout.vue'
-    defineProps({
-        message: Array,
-        album: Object
-    })
+
+let props = defineProps({
+    message: Array,
+    album: Object
+})
+
+let form = useForm({
+  artist: props.album.artist,
+  title: props.album.title,
+})
+
+function handleEdit(){
+  router.put(usePage().url, { forceFormData: true, data: form });
+}
 
 </script>
 
 <template>
     <DefaultLayout :messages="message">
         {{ album }}
-        <Vueform>
-    <TextElement
-      name="artist"
-      label="Artist"
-      field-name="artist"
-      :rules="[
-        'required',
-        'min:1',
-        'max:50',
-      ]"
-    />
-    <TextElement
-      name="Album"
-      label="Album"
-      field-name="album"
-      :rules="[
-        'required',
-        'min:2',
-        'max:50',
-      ]"
-    />
-    <GroupElement
-      name="container2"
-    >
-      <GroupElement
-        name="column1"
-        :columns="{
-          container: 6,
-        }"
-      >
-        <ButtonElement
-          name="secondaryButton"
-          button-label="Cancel"
-          :secondary="true"
-        />
-      </GroupElement>
-      <GroupElement
-        name="column2"
-        :columns="{
-          container: 6,
-        }"
-      >
-        <ButtonElement
-          name="submit"
-          button-label="Submit"
-          :submits="true"
-        />
-      </GroupElement>
-    </GroupElement>
-  </Vueform>
-    </DefaultLayout>
+        {{ form }}
+
+  <form v-on:prevent.submit="handleEdit">
+    <input type="text" v-model="form.artist">
+    <div v-if="form.errors.arttist">{{ form.errors.artist }}</div>
+    <input type="text" v-model="form.title">
+    <div v-if="form.errors.title">{{ form.errors.title }}</div>
+    <button type="submit" :disabled="form.processing">Update</button>
+  </form >
+  </DefaultLayout>
 </template>
