@@ -41,7 +41,7 @@ class InertiaListView(ListView):
 
     def get(self, request, *args, **kwargs):
         sup = super().get(self)
-        messages.add_message(request, messages.INFO, 'Message from list')
+        #messages.add_message(request, messages.INFO, 'Message from list')
         return render(request,
                       self.inertia_view,
                       props={self.prop_name: sup.context_data['object_list'],
@@ -57,24 +57,10 @@ class InertiaDetailView(DetailView):
     
     def get(self, request, *args, **kwargs):
         sup = super().get(self)
-        messages.add_message(request, messages.INFO, 'message from detail')
+        #messages.add_message(request, messages.INFO, 'message from detail')
         return render(request,
                       self.inertia_view,
                       props = {self.prop_name: sup.context_data['object'],
-                               }
-                     )
-class InertiaCreateView(CreateView):
-    model = None
-    prop_name = None
-    inertia_view = None
-    redirect_url = None
-
-    def get(self, request, *args, **kwargs):
-        sup = super().get(self)
-        print((sup.context_data["view"].fields))
-        return render(request,
-                      self.inertia_view,
-                      props = {self.prop_name: {s:None for s in sup.context_data['view'].fields },
                                }
                      )
 
@@ -87,7 +73,6 @@ class InertiaUpdateOrCreateView(View):
 
     def get(self, request, *args, **kwargs):
         sup = self.model.objects.get(id=kwargs["pk"])
-        print(vars(sup))
         return render(request,
                       self.inertia_view,
                       props = {self.prop_name: sup,
@@ -102,12 +87,25 @@ class InertiaUpdateOrCreateView(View):
                 for k,v in data.items():
                     setattr(entry, k, v)
                 entry.save()
+                messages.add_message(request, messages.INFO, {"class": "success", 
+                                                              "message": f"{entry.__str__()} saved", 
+                                                              "title": "Success"})
                 return HttpResponseRedirect(self.redirect_url)
+            return HttpResponseRedirect(request.build_absolute_uri())
+        else:
+            raise NotImplementedError()
+
 
     def post(self, request, *args, **kwargs):
         if self.form_class:
             data = json.loads(request.body.decode("utf-8"))
             form = self.form_class(data=data)
             if form.is_valid():
-                form.save()
+                entry = form.save()
+                messages.add_message(request, messages.INFO, {"class": "success", 
+                                                              "message": f"{entry.__str__()} created",
+                                                              "title": "Success"})
                 return HttpResponseRedirect(self.redirect_url)
+            return HttpResponseRedirect(request.build_absolute_uri())
+        else:
+            raise NotImplementedError()

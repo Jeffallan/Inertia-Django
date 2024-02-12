@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
-
+import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { aliases, fa } from 'vuetify/iconsets/fa'
@@ -16,14 +16,14 @@ import Vueform from '@vueform/vueform'
 const vuetify = createVuetify({
   components,
   directives,
-  icons: {
-    defaultSet: 'fa',
-    aliases,
-    sets: {
-      fa,
-      mdi,
-    },
-  },
+  // icons: {
+  //   defaultSet: 'mdi',
+  //   aliases,
+  //   sets: {
+  //     fa,
+  //     mdi,
+  //   },
+  // },
 })
 
 createInertiaApp({
