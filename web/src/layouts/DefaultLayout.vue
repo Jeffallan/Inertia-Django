@@ -18,7 +18,7 @@ let drawer = ref(false)
         prominent
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer">
-          <v-icon>mdi-menu</v-icon>
+          
         </v-app-bar-nav-icon>
 
         <v-toolbar-title>My App</v-toolbar-title>

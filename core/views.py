@@ -83,6 +83,8 @@ class InertiaUpdateOrCreateView(View):
             data = json.loads(request.body.decode("utf-8"))
             form = self.form_class(data=data)
             entry = self.model.objects.get(id=kwargs["pk"])
+            print(form.is_valid())
+            print(type(form.errors.as_json()))
             if form.is_valid():
                 for k,v in data.items():
                     setattr(entry, k, v)
@@ -91,6 +93,11 @@ class InertiaUpdateOrCreateView(View):
                                                               "message": f"{entry.__str__()} saved", 
                                                               "title": "Success"})
                 return HttpResponseRedirect(self.redirect_url)
+            message = json.loads(form.errors.as_json())
+            for i, e in enumerate(form.errors):
+                messages.add_message(request, messages.ERROR, {"class": "error", 
+                                                               "message": message["title"][i]["message"], 
+                                                               "title": "Error"})
             return HttpResponseRedirect(request.build_absolute_uri())
         else:
             raise NotImplementedError()
@@ -102,10 +109,15 @@ class InertiaUpdateOrCreateView(View):
             form = self.form_class(data=data)
             if form.is_valid():
                 entry = form.save()
-                messages.add_message(request, messages.INFO, {"class": "success", 
+                messages.add_message(request, messages.INFO, {"class": "error", 
                                                               "message": f"{entry.__str__()} created",
-                                                              "title": "Success"})
+                                                              "title": "Error"})
                 return HttpResponseRedirect(self.redirect_url)
+            message = json.loads(form.errors.as_json())
+            for i, e in enumerate(form.errors):
+                messages.add_message(request, messages.ERROR, {"class": "error", 
+                                                               "message": message["title"][i]["message"], 
+                                                               "title": "Error"})
             return HttpResponseRedirect(request.build_absolute_uri())
         else:
             raise NotImplementedError()

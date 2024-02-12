@@ -15,6 +15,11 @@ class AlbumForm(forms.ModelForm):
     class Meta:
         model = Albums
         exclude = ["id"]
+        error_messages = {
+            'title': {
+                'unique': (f"An album with that title already exists"),
+            },
+        }
 
 # Create your views here.
 class AlbumListView(InertiaListView):

@@ -9,6 +9,7 @@ function messagePayload(){
     let arr = []
     for (let i = 0; i < props.messages.length; i++) {
         let message = props.messages[i]
+        console.log(message)
         arr.push(JSON.parse(message.replace(/'/g, '"')))
 }
 return arr
@@ -24,7 +25,7 @@ return arr
                                         :text="m.message"
                                         :type="m.class"
                                         :title="m.title"
-                                        icon="$success"
+                                        :icon="'$'+m.class"
                                         variant="tonal" 
                                         >
 <!-- <template v-slot:close>
