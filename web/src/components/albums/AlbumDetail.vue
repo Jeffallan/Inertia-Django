@@ -30,13 +30,4 @@
     <v-btn><Link :href="'/'+props.album.id+'/edit'">edit</Link></v-btn>
     <v-btn @click="deleteArtist(props.album.id)" variant="tonal">delete</v-btn>
     </div>
-
-    <form >
-    <input type="text" v-model="form.artist">
-    <div v-if="form.errors.email">{{ form.errors.email }}</div>
-    <input type="text" v-model="form.title">
-    <div v-if="form.errors.password">{{ form.errors.title }}</div>
-    <Link  @click="handleEdit"><v-btn>Update</v-btn></Link>
-  </form >
-
 </template>

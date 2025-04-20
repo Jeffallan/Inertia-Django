@@ -1,7 +1,7 @@
 <script setup>
 
 import DefaultLayout from '../../layouts/DefaultLayout.vue'
-import AlbumDetail from '../../components/AlbumDetail.vue';
+import AlbumDetail from '../../components/albums/AlbumDetail.vue';
 
 
 defineProps({message: Array,

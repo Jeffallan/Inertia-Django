@@ -1,7 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import DefaultLayout from '../../layouts/DefaultLayout.vue';
-import AlbumListView from '../../components/AlbumListView.vue';
+import AlbumListView from '../../components/albums/AlbumListView.vue';
 
 
 defineProps({

@@ -1,5 +1,6 @@
 import json
-from inertia import render
+from inertia import render #, ValidationError
+import inertia
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -7,7 +8,9 @@ from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib import messages
-from django.core.paginator import EmptyPage 
+from django.core.paginator import EmptyPage
+
+from django.http import QueryDict
 
 
 def _get_previous_page_number(sup):
@@ -80,12 +83,32 @@ class InertiaUpdateOrCreateView(View):
                      )
     def put(self, request, *args, **kwargs):
         if self.form_class:
-            data = json.loads(request.body.decode("utf-8"))
+            #print(request.content_params)
+            #print(request.content_type)
+            #print(request.body.decode("utf-8"))
+            
+            # This depends on content type use this for json
+            try: 
+                data = json.loads(request.body.decode("utf-8"))
+            except json.decoder.JSONDecodeError:
+                data = request.body.decode("utf-8")
+
+            # https://stackoverflow.com/questions/73896526/how-to-save-multipart-formdata-turned-into-a-querydict-using-django-rest-frame
+
+            print("request", request.POST)
+            form_data = QueryDict("", mutable=True)
+            form_data.update(data)
+            frm = self.form_class(form_data)
+            print("frm", frm)
+            #data = request.body.decode("utf=8") #request.POST
+            #print(data)
+            #Use this for json
+            #form = self.form_class(data=data)
             form = self.form_class(data=data)
             entry = self.model.objects.get(id=kwargs["pk"])
-            print(form.is_valid())
-            print(type(form.errors.as_json()))
+            #print(data)
             if form.is_valid():
+                #print("form: ", form)
                 for k,v in data.items():
                     setattr(entry, k, v)
                 entry.save()
@@ -93,8 +116,13 @@ class InertiaUpdateOrCreateView(View):
                                                               "message": f"{entry.__str__()} saved", 
                                                               "title": "Success"})
                 return HttpResponseRedirect(self.redirect_url)
+            #print("form invalid")
             message = json.loads(form.errors.as_json())
-            for i, e in enumerate(form.errors):
+            #print("form: ", form)
+            #print(message)
+            #print(form.errors)
+            #raise inertia.ValidationError(form.errors)
+            for i, e in enumerate(form.errors): #message
                 messages.add_message(request, messages.ERROR, {"class": "error", 
                                                                "message": message["title"][i]["message"], 
                                                                "title": "Error"})
@@ -109,9 +137,9 @@ class InertiaUpdateOrCreateView(View):
             form = self.form_class(data=data)
             if form.is_valid():
                 entry = form.save()
-                messages.add_message(request, messages.INFO, {"class": "error", 
+                messages.add_message(request, messages.INFO, {"class": "success", 
                                                               "message": f"{entry.__str__()} created",
-                                                              "title": "Error"})
+                                                              "title": "Success"})
                 return HttpResponseRedirect(self.redirect_url)
             message = json.loads(form.errors.as_json())
             for i, e in enumerate(form.errors):
